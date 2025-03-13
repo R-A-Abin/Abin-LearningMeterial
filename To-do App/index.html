@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stylish Todo List</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        text-align: center;
+        margin: 20px;
+        padding: 0;
+        background-image: url(./images/background.avif);
+        background-size: cover;
+        background-repeat: no-repeat; 
+        background-position: center center;
+        background-attachment: fixed; 
+      }
+
+      .container {
+        background: rgb(60, 210, 255);
+        padding: 20px;
+        max-width: 90%;
+        width: 400px;
+        margin: auto;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #f3eaf1;
+        margin-bottom: 15px;
+      }
+
+      .input-container {
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        font-size: 16px;
+        outline: none;
+      }
+
+      button {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #218838;
+      }
+
+      ol {
+        text-align: left;
+        padding: 0;
+        margin-top: 20px;
+      }
+
+      li {
+        background: #fff;
+        padding: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        font-size: 16px;
+        transition: 0.3s;
+      }
+
+      li:hover {
+        transform: scale(1.02);
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .edit-btn,
+      .delete-btn {
+        cursor: pointer;
+        font-size: 18px;
+        transition: 0.3s;
+      }
+
+      .edit-btn {
+        color: blue;
+      }
+
+      .edit-btn:hover {
+        color: darkblue;
+      }
+
+      .delete-btn {
+        color: red;
+      }
+
+      .delete-btn:hover {
+        color: darkred;
+      }
+
+      /* Footer */
+      .footer {
+        margin-top: 30px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        color: white;
+      }
+
+      .footer b {
+        color: yellow;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      /* Smooth fade-in animation */
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive Footer */
+      @media (max-width: 600px) {
+        .footer {
+          font-size: 14px;
+          padding: 10px 15px;
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 600px) {
+        .container {
+          width: 90%;
+          padding: 15px;
+        }
+
+        input {
+          padding: 10px;
+          font-size: 14px;
+        }
+
+        button {
+          padding: 10px 15px;
+          font-size: 14px;
+        }
+
+        li {
+          font-size: 14px;
+          padding: 10px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+          font-size: 16px;
+        }
+
+        .footer {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Todo List</h2>
+      <div class="input-container">
+        <input type="text" id="input" placeholder="Enter a task..." />
+        <button onclick="show()" id="update">Submit</button>
+      </div>
+      <ol id="list"></ol>
+    </div>
+
+    <!-- Developer Credit -->
+    <p class="footer">Developed by <b>Abin</b> 🚀</p>
+
+    <script>
+      let editItem = null;
+
+      function show() {
+        let inputField = document.getElementById("input");
+        let inputValue = inputField.value.trim();
+        let updateBtn = document.getElementById("update");
+
+        if (inputValue === "") {
+          alert("Please enter a value!");
+          return;
+        }
+
+        if (editItem) {
+          editItem.querySelector(".task-text").textContent = inputValue;
+          editItem = null;
+          updateBtn.textContent = "Submit";
+        } else {
+          let orderlist = document.getElementById("list");
+          let listItem = document.createElement("li");
+
+          listItem.innerHTML = `
+                    <span class="task-text">${inputValue}</span>
+                    <span class="actions">
+                        <i class="fa-solid fa-pen-to-square edit-btn" onclick="edit(this)"></i>
+                        <i class="fa-solid fa-trash delete-btn" onclick="del(this)"></i>
+                    </span>
+                `;
+
+          orderlist.appendChild(listItem);
+        }
+
+        inputField.value = "";
+      }
+
+      function del(btn) {
+        let listItem = btn.closest("li");
+        listItem.remove();
+      }
+
+      function edit(btn) {
+        let listItem = btn.closest("li");
+        let inputField = document.getElementById("input");
+
+        document.getElementById("update").textContent = "Update"; // Change button text to Update
+
+        editItem = listItem;
+
+        inputField.value = listItem
+          .querySelector(".task-text")
+          .textContent.trim();
+      }
+    </script>
+  </body>
+</html>
